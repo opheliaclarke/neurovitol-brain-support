@@ -93,10 +93,38 @@
       document.title = "NeuroVitol vs " + nice + " — Which Brain Supplement Is Better? (2026)";
   }
 
+  /* ---------- CTA interstitial: prepare user for the VSL hand-off ---------- */
+  function ctaInterstitial() {
+    var inter = document.getElementById("nv-inter");
+    function offer(a) {
+      return (window.nvOfferUrl ? window.nvOfferUrl(a.getAttribute("data-cta") || "") : (a.getAttribute("href") || "#"));
+    }
+    document.querySelectorAll("a.js-cta").forEach(function (a) {
+      if (a.closest("#nv-inter")) {
+        // the "Continue" button inside the interstitial -> go straight to the offer
+        a.addEventListener("click", function (e) { e.preventDefault(); window.location.href = offer(a); });
+        return;
+      }
+      a.addEventListener("click", function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // allow open-in-new-tab
+        e.preventDefault();
+        var url = offer(a);
+        if (inter) {
+          var go = inter.querySelector(".go"); if (go) go.href = url;
+          inter.classList.add("show");
+          setTimeout(function () { if (inter.classList.contains("show")) window.location.href = url; }, 1700);
+        } else {
+          window.location.href = url;
+        }
+      });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     startCountdowns();
     stockDrip();
     exitPopup();
+    ctaInterstitial();
     dynamicVs();
     // year in footer
     document.querySelectorAll(".js-year").forEach(function (e) { e.textContent = "2026"; });

@@ -17,9 +17,9 @@ TODAY = "2026-06-09"
 OG = DOMAIN + "/assets/og.svg"
 
 PRICES = [
-    {"name":"Starter — 2 Bottles","supply":"2-Month Supply","per":"79","total":"158","was":"395","save":"60%","feat":False},
-    {"name":"Most Popular — 3 Bottles","supply":"3-Month Supply","per":"59","total":"207","was":"591","save":"65%","feat":True},
-    {"name":"Best Value — 6 Bottles","supply":"6-Month Supply","per":"49","total":"294","was":"1054","save":"72%","feat":False},
+    {"name":"Starter — 2 Bottles","supply":"2-Month Supply","per":"79","total":"158","was":"395","save":"60%","feat":False,"img":"pack-2"},
+    {"name":"Most Popular — 3 Bottles","supply":"3-Month Supply","per":"59","total":"207","was":"591","save":"65%","feat":True,"img":"pack-3"},
+    {"name":"Best Value — 6 Bottles","supply":"6-Month Supply","per":"49","total":"294","was":"1054","save":"72%","feat":False,"img":"pack-6"},
 ]
 
 INGREDIENTS = [
@@ -188,8 +188,21 @@ def exit_popup(prefix=""):
 <p class="tiny">60-day money-back guarantee · Free shipping · Secure checkout</p>
 </div></div>'''
 
+def interstitial():
+    return f'''<div class="inter-back" id="nv-inter"><div class="inter">
+<div class="spin"></div>
+<h3>Taking you to NeuroVitol&hellip;</h3>
+<p>You're being connected to the <b>official NeuroVitol&reg; presentation</b>.</p>
+<div class="hl">▶ A short video will explain how NeuroVitol works and how to lock in today's <b>60% discount</b>. Please let it load and <b>watch it through to the end</b> — your order page appears right after.</div>
+<a class="btn btn-cta btn-block pulse js-cta go" data-cta="VSL" href="#">Continue To The Presentation →</a>
+<p class="tiny">Secure checkout · 60-day money-back guarantee · Free shipping</p>
+</div></div>'''
+
+def cta_note():
+    return '<p class="cta-note"><span class="play">▶</span> Opens the official NeuroVitol presentation — give it a moment to load, watch the short video, then secure today\'s discount.</p>'
+
 def cta_buttons(label="Claim 60% Off + Free Shipping"):
-    return f'<a class="btn btn-cta btn-lg pulse js-cta" data-cta="VSL" href="#order">{label} →</a>'
+    return f'<a class="btn btn-cta btn-lg pulse js-cta" data-cta="VSL" href="#order">{label} →</a>{cta_note()}'
 
 def trust_strip():
     items = [("truck","Free Shipping on Every Order"),("shield","60-Day Money-Back Guarantee"),
@@ -236,6 +249,7 @@ def page(path, title, desc, body, schema=None, prefix="", keywords="", canonical
 {footer(prefix)}
 {sticky()}
 {exit_popup(prefix)}
+{interstitial()}
 <script src="{prefix}assets/config.js"></script>
 <script src="{prefix}assets/main.js"></script>
 </body>
@@ -279,6 +293,7 @@ def pricing_block(prefix=""):
         feat="featured" if p["feat"] else ""
         tag='<span class="tag">Most Popular · Best Seller</span>' if p["feat"] else ""
         cards+=f'''<div class="price-card {feat}">{tag}
+<img class="pack-img" src="{prefix}assets/img/{p["img"]}.png" alt="{p["name"]} of NeuroVitol Advanced Brain Support" loading="lazy">
 <h3>{p["name"]}</h3><div class="supply">{p["supply"]}</div>
 <div class="per">${p["per"]}<small>/bottle</small></div>
 <div class="was">${p["was"]} retail</div>
@@ -290,8 +305,8 @@ def pricing_block(prefix=""):
 <li>{icon("check")} 60-day money-back guarantee</li>
 <li>{icon("check")} Non-habit forming daily formula</li>
 </ul>
-<a class="btn btn-cta btn-block pulse js-cta" data-cta="VSL" href="#">Add To Cart →</a>
-<div class="secure">{icon("lock")} Safe &amp; secure checkout</div></div>'''
+<a class="btn btn-cta btn-block pulse js-cta" data-cta="VSL" href="#">Claim This Package →</a>
+<div class="secure">{icon("lock")} Watch the short video, then check out securely</div></div>'''
     return f'''<section id="order" class="soft"><div class="wrap center">
 <span class="eyebrow">Choose Your Package &amp; Save More</span>
 <h2>Lock In Your NeuroVitol Discount Today</h2>
@@ -302,11 +317,16 @@ def pricing_block(prefix=""):
 <p class="muted" style="margin-top:20px;font-size:.9rem">Prices shown reflect today's promotion and may change without notice. Free shipping applies to all U.S. orders.</p>
 </div></section>'''
 
-def guarantee_block():
+def guarantee_block(prefix=""):
     return f'''<section><div class="wrap"><div class="band">
-<div class="seal"><b>60</b>DAY<br>GUARANTEE</div>
-<h2>Try It Risk-Free for 60 Days</h2>
-<p class="narrow" style="margin:0 auto 6px">We stand behind NeuroVitol with a full <b>60-day money-back guarantee</b>. Add it to your daily routine with confidence — if you're not satisfied for any reason, simply return it within 60 days for a refund. <b>Either you love it… or you don't pay.</b></p>
+<div class="guar-split">
+<img src="{prefix}assets/img/guarantee-bottle.png" alt="NeuroVitol bottle with 60-day money-back guarantee">
+<div>
+<div class="seal" style="margin:0 0 14px"><b>60</b>DAY<br>GUARANTEE</div>
+<h2 style="text-align:left">Try It Risk-Free for 60 Days</h2>
+<p style="margin:0">We stand behind NeuroVitol with a full <b>60-day money-back guarantee</b>. Add it to your daily routine with confidence — if you're not satisfied for any reason, simply return it within 60 days for a refund. <b>Either you love it… or you don't pay.</b></p>
+</div>
+</div>
 </div></div></section>'''
 
 def faq_block(faqs, heading="Frequently Asked Questions"):
@@ -353,7 +373,8 @@ def build_index():
 </div>
 <div class="hero-card">
 <span class="save-flag">60% OFF</span>
-<h3 style="margin-top:6px">Claim Today's NeuroVitol Discount</h3>
+<img class="hero-prod" src="assets/img/bottle.png" alt="NeuroVitol Advanced Brain Support supplement bottle — 60 capsules" width="200" height="370">
+<h3 style="margin-top:0">Claim Today's NeuroVitol Discount</h3>
 <div class="rating-row"><span class="stars">★★★★★</span> <b>4.9</b> <span class="muted">· 6,000+ reviews</span></div>
 <p class="muted" style="margin:0 0 8px">Sale is <b style="color:#e11d48">LIVE</b> — your discount is reserved for:</p>
 <div class="countdown js-countdown"><div class="cd-box cd-m">10<span>MIN</span></div><div class="cd-box cd-s">00<span>SEC</span></div></div>
@@ -370,6 +391,22 @@ def build_index():
 <p class="lead">You push through the day, but your focus still doesn't feel like <i>you</i>. Stress, age, poor sleep, and nonstop demands can leave your memory slower, your focus scattered, and your thoughts less clear than they used to be — rereading the same line, forgetting small details, losing momentum by midday.</p>
 <p>The good news: consistent daily cognitive support can help you feel more steady, focused, and mentally clear again. That's exactly what NeuroVitol is built for — supporting memory, attention, and sharper day-to-day thinking from the inside out.</p>
 </div></section>
+
+<section class="soft"><div class="wrap"><div class="prod-split">
+<img src="assets/img/bottle.png" alt="NeuroVitol Advanced Brain Support — 60 capsules, 1030mg daily brain blend" loading="lazy">
+<div>
+<span class="eyebrow">Meet NeuroVitol</span>
+<h2>Daily Support For A Clearer, Sharper Mind</h2>
+<p class="lead">{PRODUCT} is formulated to help support memory, focus, mental clarity, and healthy cognitive performance — a simple, dependable way to feel more mentally prepared for work, family, and everyday demands.</p>
+<ul class="benefit-ticks">
+<li>{icon("check")} 60 capsules · 1030mg daily brain-support blend</li>
+<li>{icon("check")} 5 transparent ingredients — no proprietary fog</li>
+<li>{icon("check")} Non-habit forming · no harsh jitters or crash</li>
+<li>{icon("check")} Available online now — no prescription needed</li>
+</ul>
+{cta_buttons("Get NeuroVitol — 60% Off")}
+</div>
+</div></div></section>
 
 <section class="soft"><div class="wrap"><div class="center"><span class="eyebrow">The 6 Ways NeuroVitol Supports Your Mind</span>
 <h2>Daily Support For A Clearer, Sharper Mind</h2>
@@ -601,13 +638,17 @@ def build_vs(slug, data):
 <p class="muted">Comparison reflects publicly available information and typical positioning as of 2026; always check each brand's current label, pricing, and terms. NeuroVitol and {name} are separate products; this page is an independent comparison by NeuroVitol.</p>
 </div>
 </div></section>
-<section class="soft" id="order"><div class="wrap narrow center">
+<section class="soft" id="order"><div class="wrap"><div class="prod-split">
+<img src="../assets/img/bottle.png" alt="NeuroVitol Advanced Brain Support bottle" loading="lazy">
+<div>
 <h2>Ready to try the simpler brain-support choice?</h2>
 <p class="lead">Lock in up to 60% off NeuroVitol today — free shipping and a 60-day money-back guarantee included.</p>
-<div class="countdown js-countdown"><div class="cd-box cd-m">10<span>MIN</span></div><div class="cd-box cd-s">00<span>SEC</span></div></div>
-<p class="stock-line">Only <span class="js-stock">58</span> discounted packs remaining</p>
+<div class="countdown js-countdown" style="justify-content:flex-start"><div class="cd-box cd-m">10<span>MIN</span></div><div class="cd-box cd-s">00<span>SEC</span></div></div>
+<p class="stock-line" style="text-align:left">Only <span class="js-stock">58</span> discounted packs remaining</p>
 <a class="btn btn-cta btn-lg pulse js-cta" data-cta="VSL" href="#">Claim My NeuroVitol Discount →</a>
-</div></section>
+{cta_note()}
+</div>
+</div></div></section>
 <section><div class="wrap"><h3 style="text-align:center">More NeuroVitol comparisons</h3>
 <div class="tag-list" style="justify-content:center">{related}</div></div></section>'''
     schema=[breadcrumb([("Home",DOMAIN+"/"),("Compare",DOMAIN+"/vs/"),(f"vs {name}",DOMAIN+f"/vs/{slug}.html")]),
