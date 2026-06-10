@@ -39,38 +39,44 @@
     }, 9000);
   }
 
-  /* ---------- exit-intent popup ---------- */
+  /* ---------- exit-intent popup (REPEATABLE — fires on every exit intent) ---------- */
   function exitPopup() {
     var back = document.getElementById("nv-exit");
     if (!back) return;
-    var shown = false;
-    function show() {
-      if (shown) return;
-      try { if (sessionStorage.getItem("nv_exit_done")) return; } catch (e) {}
-      shown = true;
-      back.classList.add("show");
-      try { sessionStorage.setItem("nv_exit_done", "1"); } catch (e) {}
-      // mini countdown inside popup
-      var t = 5 * 60, mini = back.querySelector(".cd-mini-v");
-      if (mini) {
-        setInterval(function () {
-          t = Math.max(0, t - 1);
-          mini.textContent = pad(Math.floor(t / 60)) + ":" + pad(t % 60);
-        }, 1000);
-      }
+    var open = false, cooldownUntil = 0, started = false;
+    var t = 5 * 60, mini = back.querySelector(".cd-mini-v");
+    function tickStart() {
+      if (started || !mini) return; started = true;
+      setInterval(function () {
+        t = Math.max(0, t - 1);
+        mini.textContent = pad(Math.floor(t / 60)) + ":" + pad(t % 60);
+      }, 1000);
     }
-    function hide() { back.classList.remove("show"); }
-    // desktop: mouse leaves top
+    function show() {
+      if (open) return;
+      if (Date.now() < cooldownUntil) return; // brief debounce so one exit doesn't double-fire
+      open = true;
+      back.classList.add("show");
+      tickStart();
+    }
+    function hide() { open = false; back.classList.remove("show"); cooldownUntil = Date.now() + 900; }
+    // desktop: re-arms every time the cursor leaves through the top of the viewport
     document.addEventListener("mouseout", function (e) {
       if (!e.relatedTarget && e.clientY <= 0) show();
     });
-    // mobile: fast scroll-up or back-button intent + time fallback
+    // mobile: fast scroll-up (back-to-top / leave intent), repeatable
     var lastY = window.scrollY;
     window.addEventListener("scroll", function () {
-      if (window.scrollY < lastY - 60 && window.scrollY < 240) show();
+      if (window.scrollY < lastY - 70 && window.scrollY < 260) show();
       lastY = window.scrollY;
     }, { passive: true });
-    setTimeout(function () { if (window.matchMedia("(max-width:720px)").matches) show(); }, 35000);
+    // mobile: browser-back intent (pushState trap) re-arms each time
+    try {
+      history.pushState(null, "", location.href);
+      window.addEventListener("popstate", function () {
+        if (window.matchMedia("(max-width:720px)").matches) { show(); history.pushState(null, "", location.href); }
+      });
+    } catch (e) {}
     back.addEventListener("click", function (e) { if (e.target === back) hide(); });
     var x = back.querySelector(".x"); if (x) x.addEventListener("click", hide);
     var stay = back.querySelector(".js-stay"); if (stay) stay.addEventListener("click", hide);
@@ -93,9 +99,28 @@
       document.title = "NeuroVitol vs " + nice + " — Which Brain Supplement Is Better? (2026)";
   }
 
-  /* ---------- CTA interstitial: prepare user for the VSL hand-off ---------- */
+  /* ---------- CTA interstitial: prepare user for the offer hand-off ---------- */
+  function setInterCopy() {
+    var inter = document.getElementById("nv-inter");
+    if (!inter) return;
+    var flow = (window.NV && window.NV.flow) || "vsl";
+    var h = inter.querySelector("#nv-inter-h"), p = inter.querySelector("#nv-inter-p"),
+        hl = inter.querySelector("#nv-inter-hl"), go = inter.querySelector("#nv-inter-go");
+    if (flow === "dtc") {
+      if (h) h.textContent = "Securing your 60% discount…";
+      if (p) p.innerHTML = "Taking you to the official NeuroVitol® order page.";
+      if (hl) hl.innerHTML = "Your <b>60% OFF + free shipping</b> is being applied — your secure checkout loads in a moment.";
+      if (go) go.textContent = "Continue To Checkout →";
+    } else {
+      if (h) h.textContent = "Taking you to NeuroVitol…";
+      if (p) p.innerHTML = "You're being connected to the <b>official NeuroVitol® presentation</b>.";
+      if (hl) hl.innerHTML = "▶ A short video explains how NeuroVitol works and how to claim today's <b>60% discount</b>. Let it load and <b>watch it through to the end</b> — the order page appears right after.";
+      if (go) go.textContent = "Continue To The Presentation →";
+    }
+  }
   function ctaInterstitial() {
     var inter = document.getElementById("nv-inter");
+    setInterCopy();
     function offer(a) {
       return (window.nvOfferUrl ? window.nvOfferUrl(a.getAttribute("data-cta") || "") : (a.getAttribute("href") || "#"));
     }

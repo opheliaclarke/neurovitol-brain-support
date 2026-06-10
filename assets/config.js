@@ -10,15 +10,25 @@ window.NV = {
   // NOTE: the raw links you provided used "{gbraid|" — that is malformed Google
   // macro syntax; normalized to {gbraid} / {wbraid} so substitution works.
   links: {
-    // Link 1 (uid=566) — used as the VSL (video sales letter) offer page
+    // Link 1 (uid=566) — VSL (video sales letter) offer page
     VSL: "https://www.lckhighepcs.com/2GXK7W/RJSXT8/?uid=566&sub1={gclid}&sub2={gbraid}&sub3={wbraid}",
-    // Link 2 (no uid) — used as the TSL (text sales letter) offer page
-    TSL: "https://www.lckhighepcs.com/2GXK7W/RJSXT8/?sub1={gclid}&sub2={gbraid}&sub3={wbraid}"
+    // Link 2 (no uid) — TSL (text sales letter) offer page
+    TSL: "https://www.lckhighepcs.com/2GXK7W/RJSXT8/?sub1={gclid}&sub2={gbraid}&sub3={wbraid}",
+    // DTC (direct-to-cart / order form) — PASTE the DTC link from your AM here.
+    // Leave blank to fall back to VSL automatically until you have it.
+    DTC: ""
   },
-  // Which offer page every CTA points to by default.
-  // VSL converts best behind a strong landing experience (this site) — keep "VSL".
-  // Flip to "TSL" in one edit if the network/AM says the text page performs better.
+  // Which offer page every CTA points to by default: "DTC" | "VSL" | "TSL".
+  // RECOMMENDED for this pre-sell SEO site: "DTC" — visitors are already sold by the
+  // page, so send them straight to the order form instead of a 20-min video (backwards).
+  // Currently "VSL" because that's the link we have; flip to "DTC" the moment the
+  // DTC link is pasted above. (nvOfferUrl falls back to VSL if the chosen link is empty.)
   primary: "VSL",
+
+  // CTA hand-off style: "vsl" shows a "watch the short video" interstitial;
+  // "dtc" shows a fast "securing your discount → checkout" transition (no video promise).
+  // Keep this matched to `primary`. Set to "dtc" when you switch primary to "DTC".
+  flow: "vsl",
 
   // Contact / NAP (must match offer page for trust + local SEO consistency)
   phone: "(888) 203-1709",
@@ -45,7 +55,8 @@ window.NV = {
 window.nvOfferUrl = function (which) {
   var cfg = window.NV;
   var key = (which || cfg.primary || "VSL").toUpperCase();
-  var tmpl = cfg.links[key] || cfg.links.VSL;
+  // fall back to VSL if the chosen link slot is empty (e.g. DTC not pasted yet)
+  var tmpl = cfg.links[key] || cfg.links.VSL || cfg.links.TSL;
   function get(k) {
     var p = new URLSearchParams(location.search);
     return p.get(k) || (function () { try { return sessionStorage.getItem("nv_" + k); } catch (e) { return ""; } })() || "";
