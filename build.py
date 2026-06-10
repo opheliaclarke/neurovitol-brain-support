@@ -1110,8 +1110,7 @@ Sitemap: {DOMAIN}/sitemap.xml
 - Blog: {DOMAIN}/blog/index.html
 '''
     open(os.path.join(ROOT,"llms.txt"),"w",encoding="utf-8").write(llms)
-    # CNAME omitted until neurovitol.shop is purchased; re-enable then:
-    # open(os.path.join(ROOT,"CNAME"),"w",encoding="utf-8").write("neurovitol.shop\n")
+    open(os.path.join(ROOT,"CNAME"),"w",encoding="utf-8").write("neurovitol.shop\n")
     open(os.path.join(ROOT,".nojekyll"),"w",encoding="utf-8").write("")
 
 def main():
