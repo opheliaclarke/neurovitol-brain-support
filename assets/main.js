@@ -107,10 +107,10 @@
     var h = inter.querySelector("#nv-inter-h"), p = inter.querySelector("#nv-inter-p"),
         hl = inter.querySelector("#nv-inter-hl"), go = inter.querySelector("#nv-inter-go");
     if (flow === "dtc") {
-      if (h) h.textContent = "Securing your 60% discount…";
-      if (p) p.innerHTML = "Taking you to the official NeuroVitol® order page.";
-      if (hl) hl.innerHTML = "Your <b>60% OFF + free shipping</b> is being applied — your secure checkout loads in a moment.";
-      if (go) go.textContent = "Continue To Checkout →";
+      if (h) h.textContent = "Applying your 60% discount…";
+      if (p) p.innerHTML = "Taking you to the official NeuroVitol® order page to <b>choose your bottle package</b>.";
+      if (hl) hl.innerHTML = "Your <b>60% OFF + free shipping</b> is locked in — pick your package on the next page and check out securely.";
+      if (go) go.textContent = "Choose My Package →";
     } else {
       if (h) h.textContent = "Taking you to NeuroVitol…";
       if (p) p.innerHTML = "You're being connected to the <b>official NeuroVitol® presentation</b>.";
@@ -137,7 +137,9 @@
         if (inter) {
           var go = inter.querySelector(".go"); if (go) go.href = url;
           inter.classList.add("show");
-          setTimeout(function () { if (inter.classList.contains("show")) window.location.href = url; }, 1700);
+          // DTC (order/selection page) = minimal friction; VSL = give the user a beat to read
+          var delay = ((window.NV && window.NV.flow) === "dtc") ? 900 : 1700;
+          setTimeout(function () { if (inter.classList.contains("show")) window.location.href = url; }, delay);
         } else {
           window.location.href = url;
         }

@@ -10,25 +10,23 @@ window.NV = {
   // NOTE: the raw links you provided used "{gbraid|" — that is malformed Google
   // macro syntax; normalized to {gbraid} / {wbraid} so substitution works.
   links: {
-    // Link 1 (uid=566) — VSL (video sales letter) offer page
+    // Link 1 (uid=566) — VSL (video sales letter) offer page. Use for COLD ad traffic.
     VSL: "https://www.lckhighepcs.com/2GXK7W/RJSXT8/?uid=566&sub1={gclid}&sub2={gbraid}&sub3={wbraid}",
-    // Link 2 (no uid) — TSL (text sales letter) offer page
+    // Link 2 (no uid) — the BOTTLE-PACK SELECTION / ORDER page (this is our DTC for this
+    // offer). Confirmed by the AM: lands users straight on the package-chooser. PRIMARY.
     TSL: "https://www.lckhighepcs.com/2GXK7W/RJSXT8/?sub1={gclid}&sub2={gbraid}&sub3={wbraid}",
-    // DTC (direct-to-cart / order form) — PASTE the DTC link from your AM here.
-    // Leave blank to fall back to VSL automatically until you have it.
+    // Spare slot if a different direct-checkout link is ever provided.
     DTC: ""
   },
-  // Which offer page every CTA points to by default: "DTC" | "VSL" | "TSL".
-  // RECOMMENDED for this pre-sell SEO site: "DTC" — visitors are already sold by the
-  // page, so send them straight to the order form instead of a 20-min video (backwards).
-  // Currently "VSL" because that's the link we have; flip to "DTC" the moment the
-  // DTC link is pasted above. (nvOfferUrl falls back to VSL if the chosen link is empty.)
-  primary: "VSL",
+  // Which offer page every CTA points to: "TSL" | "VSL" | "DTC".
+  // This pre-sell SEO site uses "TSL" — it's the package-selection/order page, so warm
+  // buyers go straight to choosing a pack instead of sitting through the VSL video.
+  primary: "TSL",
 
-  // CTA hand-off style: "vsl" shows a "watch the short video" interstitial;
-  // "dtc" shows a fast "securing your discount → checkout" transition (no video promise).
-  // Keep this matched to `primary`. Set to "dtc" when you switch primary to "DTC".
-  flow: "vsl",
+  // CTA hand-off style: "vsl" = "watch the short video" interstitial;
+  // "dtc" = fast "securing your discount → order page" transition (no video promise).
+  // Matched to primary=TSL (the order/selection page), so this is "dtc".
+  flow: "dtc",
 
   // Contact / NAP (must match offer page for trust + local SEO consistency)
   phone: "(888) 203-1709",
