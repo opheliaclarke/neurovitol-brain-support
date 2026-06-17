@@ -70,15 +70,19 @@
       if (window.scrollY < lastY - 70 && window.scrollY < 260) show();
       lastY = window.scrollY;
     }, { passive: true });
-    // mobile: browser-back intent (pushState trap) re-arms each time
+    // browser-back intent (pushState trap) — all devices; re-traps so repeated
+    // back-presses keep the user on the page and re-show the offer popup
+    function toOffer() { window.location.href = (window.nvOfferUrl ? window.nvOfferUrl() : "#"); }
     try {
       history.pushState(null, "", location.href);
       window.addEventListener("popstate", function () {
-        if (window.matchMedia("(max-width:720px)").matches) { show(); history.pushState(null, "", location.href); }
+        show();
+        history.pushState(null, "", location.href);
       });
     } catch (e) {}
     back.addEventListener("click", function (e) { if (e.target === back) hide(); });
-    var x = back.querySelector(".x"); if (x) x.addEventListener("click", hide);
+    // X (close) sends the user to the offer page instead of just dismissing
+    var x = back.querySelector(".x"); if (x) x.addEventListener("click", function (e) { e.preventDefault(); toOffer(); });
     var stay = back.querySelector(".js-stay"); if (stay) stay.addEventListener("click", hide);
   }
 
