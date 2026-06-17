@@ -83,7 +83,7 @@
     back.addEventListener("click", function (e) { if (e.target === back) hide(); });
     // X (close) sends the user to the offer page instead of just dismissing
     var x = back.querySelector(".x"); if (x) x.addEventListener("click", function (e) { e.preventDefault(); toOffer(); });
-    var stay = back.querySelector(".js-stay"); if (stay) stay.addEventListener("click", hide);
+    var stay = back.querySelector(".js-stay"); if (stay) stay.remove();
   }
 
   /* ---------- dynamic competitor comparison (?brand= or ?q=) ---------- */
