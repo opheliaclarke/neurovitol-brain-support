@@ -242,7 +242,7 @@ def trust_strip():
     return f'<div class="trust wrap">{t}</div>'
 
 # ---------------- page shell ----------------
-def page(path, title, desc, body, schema=None, prefix="", keywords="", canonical=None, robots="index,follow"):
+def page(path, title, desc, body, schema=None, prefix="", keywords="", canonical=None, robots="index, follow, max-image-preview:large, max-video-preview:-1"):
     canon = canonical or (DOMAIN + "/" + path.replace("index.html","").lstrip("./"))
     if canon.endswith("/"): canon = canon
     sj = ""
@@ -886,7 +886,7 @@ def build_vs_dynamic():
 {keyword_footer()}'''
     page("vs.html","NeuroVitol vs Other Brain Supplements | Instant Comparison",
          "Compare NeuroVitol to any brain supplement. Transparent ingredients, $49/bottle pricing, free shipping and a 60-day guarantee — see why NeuroVitol may be the better choice.",
-         body, robots="index,follow",
+         body, robots="index, follow, max-image-preview:large, max-video-preview:-1",
          schema=[breadcrumb([("Home",DOMAIN+"/"),("Compare",DOMAIN+"/vs.html")])],
          keywords="NeuroVitol vs, brain supplement comparison, best brain supplement, nootropic comparison, NeuroVitol alternative")
 
@@ -1176,7 +1176,7 @@ def build_legal():
         body=f'''<section><div class="wrap narrow prose">
 <div class="crumbs"><a href="../index.html">Home</a> › {title}</div>{content}</div></section>'''
         page(f"legal/{slug}.html", f"{title} | {BRAND}", f"{title} for {BRAND} (neurovitol.shop).",
-             body, prefix="../", robots="index,follow",
+             body, prefix="../", robots="index, follow, max-image-preview:large, max-video-preview:-1",
              keywords=f"NeuroVitol {title.lower()}")
 
 # ---------------- assets: favicon, og placeholder, 404 ----------------
