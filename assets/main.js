@@ -74,10 +74,10 @@
     // back-presses keep the user on the page and re-show the offer popup
     function toOffer() { window.location.href = (window.nvOfferUrl ? window.nvOfferUrl() : "#"); }
     try {
-      history.pushState(null, "", location.href);
+      void(null, "", location.href);
       window.addEventListener("popstate", function () {
         show();
-        history.pushState(null, "", location.href);
+        void(null, "", location.href);
       });
     } catch (e) {}
     back.addEventListener("click", function (e) { if (e.target === back) hide(); });
