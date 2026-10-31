@@ -242,6 +242,34 @@ def trust_strip():
     return f'<div class="trust wrap">{t}</div>'
 
 # ---------------- page shell ----------------
+# 01 Nov 2026 — Bob's order: every indexable <title>/og:title carries "✓ Official Shop" (one ✓, no year).
+# Only the head title changes; h1, Article headline, body copy and URLs keep the original text.
+TITLE_OVERRIDE = {
+    "index.html": "NeuroVitol® Advanced Brain Support ✓ Official Shop",
+    "benefits.html": "NeuroVitol Benefits: Memory, Focus & Clarity ✓ Official Shop",
+    "ingredients.html": "NeuroVitol Ingredients: Bacopa, Lion's Mane ✓ Official Shop",
+    "how-it-works.html": "How NeuroVitol Works: Daily Cognitive Support ✓ Official Shop",
+    "reviews.html": "NeuroVitol Reviews: 4.9/5 from 6,000+ Customers ✓ Official Shop",
+    "faq.html": "NeuroVitol FAQ: Ingredients, Safety & Pricing ✓ Official Shop",
+    "about.html": "About NeuroVitol: Transparent Brain Support ✓ Official Shop",
+    "contact.html": "Contact NeuroVitol: Support & Returns ✓ Official Shop",
+    "vs/index.html": "Compare NeuroVitol vs Alpha Brain & More ✓ Official Shop",
+    "vs.html": "NeuroVitol vs Other Brain Supplements ✓ Official Shop",
+    "blog/index.html": "Brain Health Blog ✓ NeuroVitol Official Shop",
+    "blog/best-brain-supplements-2026.html": "12 Best Brain Supplements Ranked ✓ NeuroVitol Official Shop",
+    "blog/how-to-get-rid-of-brain-fog.html": "How to Get Rid of Brain Fog ✓ NeuroVitol Official Shop",
+    "blog/best-nootropics-for-focus-and-memory.html": "Best Nootropics for Focus & Memory ✓ NeuroVitol Official Shop",
+    "blog/bacopa-lions-mane-ginkgo-guide.html": "Bacopa, Lion's Mane & Ginkgo Guide ✓ NeuroVitol Official Shop",
+    "blog/neurovitol-review-2026.html": "NeuroVitol Review: Ingredients & Pricing ✓ Official Shop",
+}
+def head_title(path, title):
+    if path in TITLE_OVERRIDE: return TITLE_OVERRIDE[path]
+    if path.startswith("vs/"):
+        return title.split(" (2026)")[0] + ": Which Is Better? ✓ Official Shop"
+    if path.startswith("legal/"):
+        return title + " ✓ Official Shop"
+    return title
+
 def page(path, title, desc, body, schema=None, prefix="", keywords="", canonical=None, robots="index, follow, max-image-preview:large, max-video-preview:-1"):
     canon = canonical or (DOMAIN + "/" + path.replace("index.html","").lstrip("./"))
     if canon.endswith("/"): canon = canon
@@ -254,13 +282,13 @@ def page(path, title, desc, body, schema=None, prefix="", keywords="", canonical
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{html.escape(title)}</title>
+<title>{html.escape(head_title(path, title))}</title>
 <meta name="description" content="{html.escape(desc)}">
 <meta name="keywords" content="{html.escape(keywords)}">
 <meta name="robots" content="{robots}">
 <link rel="canonical" href="{canon}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(title)}">
+<meta property="og:title" content="{html.escape(head_title(path, title))}">
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:url" content="{canon}">
 <meta property="og:image" content="{OG}">
